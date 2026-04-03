@@ -8,6 +8,14 @@ cd to `/src` and run the command
 
 cd to `/bin/` and run `./main/`
 
+### Usage
+
+```
+./main <path-to-audio-file> <flag>
+```
+
+only `.wav` playback possible for now.
+
 ### Flags
 
 `-b` -> toggle bar display  
