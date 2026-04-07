@@ -2,5 +2,4 @@
 
 /bin/
 
-man.cpp
-spec.cpp
+/test/
