@@ -4,6 +4,13 @@
 #include <raylib.h>
 #include "dr_wav.h"
 #include <string.h>
+#include <portaudio.h>
+
+#define FRAMES_PER_BUFFER 256
+#define SAMPLE_RATE 44100
+#define NUM_CHANNELS 1
+#define SAMPLE_TYPE paFloat32
+
 
 struct Visualizer
 {
@@ -52,5 +59,30 @@ struct AudioLoader
         free(samples); free(mono);
         UnloadMusicStream(music); 
         drwav_uninit(&wav);
+    }
+};
+
+struct MicrophoneInput 
+{
+    int frameIndex;
+    float* circ_buffer;
+
+    int writePos = 0; 
+    int readPos = 0; 
+    int bufferSize;
+    int available = 0;
+
+    float readBuffer[256];
+
+    bool initialize(MicrophoneInput *data);
+    bool checkForNewSamples(MicrophoneInput *data, int size, float* readBuffer);
+
+    PaStream* stream = nullptr;
+
+    ~MicrophoneInput(){
+        free(circ_buffer);
+        Pa_StopStream(stream);
+        Pa_CloseStream(stream);
+        Pa_Terminate();
     }
 };

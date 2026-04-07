@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <fftw3.h>
+#include <portaudio.h>
 #include <raylib.h>
 #include "./lib/dr_wav.h"
 #include "./lib/head.h"
@@ -107,6 +108,79 @@ bool AudioLoader::load(const char* path)
             mono[i] = samples[i];
         }
     }
+    return true;
+}
 
+// ------------------------------------------------MicrophoneInput--------------------------------
+
+static int recordCallback(const void* inputBuffer, void* outputBuffer,
+                         unsigned long framesPerBuffer,
+                         const PaStreamCallbackTimeInfo* timeInfo,
+                         PaStreamCallbackFlags statusFlags,
+                         void* Data)
+{
+    MicrophoneInput* data = (MicrophoneInput*) Data;
+    const float* input = (const float*) inputBuffer;
+    // recast pointers into required types
+
+    for (int i=0; i<framesPerBuffer; ++i)
+    {
+        data->circ_buffer[data->writePos] = input[i]; //copy data from buffer to circular buffer 
+        
+        data->writePos++; 
+        if (data->writePos >= data->bufferSize) data->writePos = 0;
+        // check if writePos goes out of bounds. wrap around if it does.
+        if (data->available < data->bufferSize) data->available++;
+    }
+    return paContinue;
+}
+
+bool MicrophoneInput::initialize(MicrophoneInput *data)
+{
+    PaError err;
+
+    data->frameIndex = 0; 
+    data->bufferSize = FRAMES_PER_BUFFER * 2;
+    data->circ_buffer = (float*) malloc(data->bufferSize*sizeof(float));
+
+    err = Pa_Initialize();
+    if (err != paNoError) {
+        std::cerr << "PortAudio error: " << Pa_GetErrorText(err) << std::endl;
+        return false;
+    }
+
+    err = Pa_OpenDefaultStream(&stream, NUM_CHANNELS, 0, SAMPLE_TYPE, SAMPLE_RATE, 
+        FRAMES_PER_BUFFER, recordCallback, data);
+    if (err != paNoError) {
+        std::cerr << "PortAudio error: " << Pa_GetErrorText(err) << std::endl;
+        return false;
+    }
+
+    err = Pa_StartStream(stream);
+    if (err != paNoError) {
+        std::cerr << "PortAudio error: " << Pa_GetErrorText(err) << std::endl;
+        return false;
+    }
+    
+    return true;
+}
+
+bool MicrophoneInput::checkForNewSamples(MicrophoneInput *data, int size, float* readBuffer)
+{
+    if (data->available < size) return false;
+    // check if enough data available
+    int idx;
+    for (int i=0; i<size; ++i)
+    {
+        idx = data->readPos+i;
+        if (idx >= data->bufferSize) idx -= data->bufferSize; // wrap around the buffer
+
+        readBuffer[i] = data->circ_buffer[idx];
+    }
+    if (idx < data->bufferSize) data->readPos = idx;
+    else data->readPos += idx; 
+    // update readpos
+
+    data->available -= size; // size amount of data taken away
     return true;
 }
