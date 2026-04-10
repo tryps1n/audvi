@@ -111,6 +111,32 @@ bool AudioLoader::load(const char* path)
     return true;
 }
 
+const char* AudioLoader::getPath()
+{
+    const char* filename = tinyfd_openFileDialog(
+    "Select Audio File",     // Title
+    "",                      // Default path
+    1,                       // Number of filters
+    (char const*[]){"*.wav"},  // File patterns
+    "Select .wav file",           // Description
+    0                        // Allow multiple selects? (0 = single)
+    );
+    std::cout << "file getting path" << std::endl;
+    return filename;
+}
+
+void AudioLoader::playUpdate()
+{
+    UpdateMusicStream(this->music);
+
+    float currentTime = GetTime();
+    float deltaTime = currentTime - lastTime;
+    lastTime = currentTime;
+
+    if (IsMusicStreamPlaying(this->music)) playTime += deltaTime;
+    currentPos = (this->samplerate) * playTime;
+}
+
 // ------------------------------------------------MicrophoneInput--------------------------------
 
 static int recordCallback(const void* inputBuffer, void* outputBuffer,

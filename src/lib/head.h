@@ -5,6 +5,7 @@
 #include "dr_wav.h"
 #include <string.h>
 #include <portaudio.h>
+#include "./tinyfiledialogs/tinyfiledialogs.h"
 
 #define FRAMES_PER_BUFFER 256
 #define SAMPLE_RATE 44100
@@ -24,8 +25,8 @@ struct Visualizer
     
     //------------------adjustments---------------------------
     float bass_weight = 0.7;
-    float treble_weight = 1;
-    int maxMag = 90; 
+    float treble_weight = 1.2;
+    int maxMag = 95; 
     int maxDB = 10; int minDB = -30;
     int offset = 50;
     //--------------------------------------------------------
@@ -49,10 +50,17 @@ struct AudioLoader
     float* samples;
     int totalframes, samplerate, channels;
     float* mono;
+    float lastTime = 0;
+    float playTime = 0;
+    long currentPos = 0;
+
     drwav wav;
     Music music;
+    const char* file_path;
 
     bool load(const char* path);
+    const char* getPath();
+    void playUpdate();
 
     ~AudioLoader()
     {
