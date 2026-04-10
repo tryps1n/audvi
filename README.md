@@ -2,27 +2,30 @@
 
 ## How to run 
 
-cd to `/src` and run the command  
- 
-`g++ main.cpp vis.cpp -o ../bin/main -lraylib -lm -lpthread -ldl -lfftw3`
+```
+cmake .. 
+make
+```
 
-cd to `/bin/` and run `./main/`
+Go to `/build/bin/` and run `audvi`
 
 ### Usage
 
 ```
-./main <path-to-audio-file> <flag>
+./main <flag>
 ```
 
 only `.wav` playback possible for now.
 
 ### Flags
 
-`-b` -> toggle bar display  
-`-l` -> toggle line display
+`-m` -> process FFT through microphone input
+`-f` -> process from `.wav` file
 
 ## Dependencies
 
 1. [raylib](https://www.raylib.com/) used for rendering graphics and audio playback  
 2. [fftw](https://www.fftw.org/) used for computing FFTs  
 3. [dr_wav](https://github.com/mackron/dr_libs/blob/master/dr_wav.h) used for decoding .wav files (included in the /lib/ directory)
+4. [portaudio](https://www.portaudio.com/) used for processing microphone input
+5. [tinyfiledialogs](https://sourceforge.net/projects/tinyfiledialogs/) used for processing file input
