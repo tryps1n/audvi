@@ -22,6 +22,8 @@ only `.wav` playback possible for now.
 `-m` -> process FFT through microphone input
 `-f` -> process from `.wav` file
 
+Press `<SPACE>` while playing to toggle between bar dislpay and graph display.
+
 ## Dependencies
 
 1. [raylib](https://www.raylib.com/) used for rendering graphics and audio playback  
