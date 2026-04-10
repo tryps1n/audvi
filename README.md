@@ -1,4 +1,4 @@
-# audvi - FFT based audio visualiser made in C++
+# FFT based audio visualiser
 
 ## How to run 
 
