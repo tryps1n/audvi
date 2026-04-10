@@ -1,4 +1,4 @@
-# FFT based audio visualiser
+# audvi - FFT based audio visualiser
 
 ## How to run 
 
