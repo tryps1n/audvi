@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cstring>
 #include <iostream>
 #include <raylib.h>
@@ -23,10 +24,12 @@ int main(int argc, char* argv[])
 
     if (!strcmp(argv[1], "-m")) useMic = true;
 
-    const int WIDTH = 800, HEIGHT = 600, FFT_SIZE = 256;
+    const int WIDTH = 1024, HEIGHT = 800, FFT_SIZE = 512;
     InitWindow(WIDTH, HEIGHT, "audvi");
     InitAudioDevice();
     SetTargetFPS(60);
+    
+    Visualizer vis(WIDTH, HEIGHT, FFT_SIZE);
     
     if (useMic) // initialise microphone
     {
@@ -39,23 +42,24 @@ int main(int argc, char* argv[])
         // const char* file_path = audio->getPath();
         audio->file_path = audio->getPath(); 
         // const char* const_path = audio->file_path;
-        audio->load(audio->file_path);
+        audio->load(audio->file_path, vis.FFT_SIZE);
         PlayMusicStream(audio->music);
     }
-    
-    Visualizer vis(800, 600, FFT_SIZE);
     
     while(!WindowShouldClose())
     {
         if (!useMic)
         {
             audio->playUpdate();
-            vis.Exec_FFT(audio->currentPos, audio->mono);
+            if(!audio->getNewSamples()) break;
+            vis.Exec_FFT(audio->sampleBuffer);
         }
         else 
         {
-            mic->checkForNewSamples(mic, FRAMES_PER_BUFFER, mic->readBuffer);
-            vis.Exec_FFT(0, mic->readBuffer);
+            if(mic->checkForNewSamples(mic, FRAMES_PER_BUFFER, mic->readBuffer))
+            {
+                vis.Exec_FFT(mic->readBuffer);
+            }
         }
 
         if (IsKeyPressed(KEY_SPACE)) useBar = !useBar;
@@ -64,8 +68,11 @@ int main(int argc, char* argv[])
             ClearBackground(BLACK);
             for (int i=0; i<vis.BIN_SIZE; ++i)
             {
-                if (useBar) vis.drawBar(i);
-                else if (i < vis.BIN_SIZE - 1) vis.drawSpec(i);
+                Color col = vis.getHSL(i);
+                if (useBar) vis.drawBar(i, col);
+                else if (i < vis.BIN_SIZE - 1) vis.drawSpec(i, col);
+                
+                std::cout << vis.magnitudes[i] << std::endl;
             }
         EndDrawing();
 

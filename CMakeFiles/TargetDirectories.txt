@@ -1,0 +1,4 @@
+/home/rangan/Documents/vscode/projects/audvi/CMakeFiles/tinyfiledialogs.dir
+/home/rangan/Documents/vscode/projects/audvi/CMakeFiles/audvi.dir
+/home/rangan/Documents/vscode/projects/audvi/CMakeFiles/edit_cache.dir
+/home/rangan/Documents/vscode/projects/audvi/CMakeFiles/rebuild_cache.dir

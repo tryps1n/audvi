@@ -7,11 +7,12 @@
 #include <portaudio.h>
 #include "./tinyfiledialogs/tinyfiledialogs.h"
 
-#define FRAMES_PER_BUFFER 256
+#define FRAMES_PER_BUFFER 512
 #define SAMPLE_RATE 44100
 #define NUM_CHANNELS 1
 #define SAMPLE_TYPE paFloat32
-
+#define HSL_SAT 60.0f
+#define HSL_LIGHT 30.0f
 
 struct Visualizer
 {
@@ -22,21 +23,24 @@ struct Visualizer
     fftw_plan plan;
     std::vector<float> magnitudes;
     std::vector<float> decibels;
-    
+
     //------------------adjustments---------------------------
-    float bass_weight = 0.7;
-    float treble_weight = 1.2;
-    int maxMag = 95; 
-    int maxDB = 10; int minDB = -30;
+    float deep_bass_weight = 0.08;
+    float bass_weight = 0.4;
+    float treble_weight = 1;
+    float normal_weight = 0.8;
+    int maxMag = BIN_SIZE; 
+    int maxDB = -20; int minDB = -80;
     int offset = 50;
     //--------------------------------------------------------
 
     Visualizer(int w, int h, int fft_size);
 
-    void Exec_FFT(int currentPos, float* monoSamples);
+    void Exec_FFT(float* monoSamples);
 
-    void drawSpec(int i);
-    void drawBar(int i);
+    void drawSpec(int i, Color col);
+    void drawBar(int i, Color col);
+    Color getHSL(int j);
 
     ~Visualizer(){
         fftw_destroy_plan(plan);
@@ -53,20 +57,25 @@ struct AudioLoader
     float lastTime = 0;
     float playTime = 0;
     long currentPos = 0;
+    long long framePos = 0;
+    float* sampleBuffer;
+    int FFT_SIZE; int hopSize;
 
     drwav wav;
     Music music;
     const char* file_path;
 
-    bool load(const char* path);
+    bool load(const char* path, int size);
     const char* getPath();
     void playUpdate();
+    bool getNewSamples();
 
     ~AudioLoader()
     {
         free(samples); free(mono);
         UnloadMusicStream(music); 
         drwav_uninit(&wav);
+        free(sampleBuffer);
     }
 };
 
@@ -80,7 +89,7 @@ struct MicrophoneInput
     int bufferSize;
     int available = 0;
 
-    float readBuffer[256];
+    float readBuffer[FRAMES_PER_BUFFER];
 
     bool initialize(MicrophoneInput *data);
     bool checkForNewSamples(MicrophoneInput *data, int size, float* readBuffer);

@@ -3,3 +3,10 @@
 /bin/
 
 /test/
+
+/build/
+
+.a
+.out
+.exe
+.cmake

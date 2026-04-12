@@ -1,0 +1,1 @@
+/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/audvi.dir/link.d CMakeFiles/audvi.dir/src/main.cpp.o CMakeFiles/audvi.dir/src/vis.cpp.o -o bin/audvi  libtinyfiledialogs.a -lraylib -lportaudio -lfftw3 -lm -lpthread -ldl
