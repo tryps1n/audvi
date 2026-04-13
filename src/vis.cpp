@@ -135,7 +135,6 @@ const char* AudioLoader::getPath()
     "Select .wav file",           // Description
     0                        // Allow multiple selects? (0 = single)
     );
-    std::cout << "file getting path" << std::endl;
     return filename;
 }
 
@@ -160,7 +159,6 @@ bool AudioLoader::getNewSamples()
         if (framePos+i >= totalframes) sampleBuffer[i] = 0;
         else sampleBuffer[i] = mono[framePos+i];
     }
-    std::cout << sampleBuffer[0] << std::endl;
     int hopSize = floor(wav.sampleRate / 60.0f);
     framePos += hopSize; 
     if (framePos > totalframes) return false;

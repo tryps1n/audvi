@@ -16,6 +16,8 @@
 
 struct Visualizer
 {
+    //------------------initialisation----------------------
+    
     int WIDTH, HEIGHT, FFT_SIZE, BIN_SIZE, BAR_PX_WIDTH;
     char visMode;
     double* fft_input;

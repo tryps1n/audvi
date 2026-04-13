@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <cstring>
 #include <iostream>
 #include <raylib.h>
@@ -10,9 +9,9 @@ int main(int argc, char* argv[])
 {
     if (argc != 2)
     {
-        std::cout << "Usage: " << std::endl;
+        std::cout << "usage: " << std::endl;
         std::cout << "./main <input-flags>" << std::endl;
-        std::cout << "Flags:" << std::endl;
+        std::cout << "flags:" << std::endl;
         std::cout << "      -m -> microphone input" << std::endl;
         std::cout << "      -f -> file input" << std::endl;
         return 1;
@@ -23,6 +22,17 @@ int main(int argc, char* argv[])
     bool useMic = false; bool useBar = true;
 
     if (!strcmp(argv[1], "-m")) useMic = true;
+    else if (!strcmp(argv[1], "-f")) useMic = false;
+    else 
+    {
+        std::cout << "Error, invalid input flag. " << std::endl;
+        std::cout << "usage: " << std::endl;
+        std::cout << "./main <input-flags>" << std::endl;
+        std::cout << "flags:" << std::endl;
+        std::cout << "      -m -> microphone input" << std::endl;
+        std::cout << "      -f -> file input" << std::endl;
+        return 1;
+    }
 
     const int WIDTH = 1024, HEIGHT = 800, FFT_SIZE = 512;
     InitWindow(WIDTH, HEIGHT, "audvi");
@@ -71,8 +81,6 @@ int main(int argc, char* argv[])
                 Color col = vis.getHSL(i);
                 if (useBar) vis.drawBar(i, col);
                 else if (i < vis.BIN_SIZE - 1) vis.drawSpec(i, col);
-                
-                std::cout << vis.magnitudes[i] << std::endl;
             }
         EndDrawing();
 
