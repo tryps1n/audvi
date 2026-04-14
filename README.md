@@ -1,15 +1,47 @@
 # audvi - FFT based audio visualiser
 
+Audvi is a real-time audio visualizer program that displays the frequency spectrum of sound input. The program supports two input sources: live microphone capture and WAV file playback. Audio is sampled and then processed using Fast Fourier Transform (FFT) algorithm to extract frequency components (bins), which are then displayed as either bars or a line graph. 
+
+## Screenshots  
+
+Demonstration of audvi can be watched [here](https://drive.google.com/file/d/16aNEdb5yDg8xhbE62zNlM9b3lqjbJH6H/view?usp=sharing).
+
+![image](./readmeassets/img1.png)
+![image](./readmeassets/img2.png)
+![image](./readmeassets/img3.png)
+![image](./readmeassets/img4.png)
+
 ## How to run 
 
+### Linux (pacman):
+`sudo pacman -S raylib fftw3 portaudio`
+Navigate to project directory
+`cd /path/to/audvi`
+
+Compile
+`g++ -o audvi src/main.cpp src/vis.cpp src/lib/tinyfiledialogs/tinyfiledialogs.c -lraylib -lportaudio -lfftw3 -lm -lpthread -ldl`
+
+### MacOS:
+`brew install raylib fftw3 portaudio`
+Navigate to project directory
+`cd /path/to/audvi`
+
+Compile (may need to link CoreFoundation framework)
+`g++ -o audvi src/main.cpp src/vis.cpp src/lib/tinyfiledialogs/tinyfiledialogs.c -lraylib -lportaudio -lfftw3 -framework CoreFoundation -lm -lpthread -ldl`
+
+### Windows:
+easiest method would be to install MSYS2, then install dependencies using the following commands
+
 ```
-cmake .. 
-make
+pacman -S mingw-w64-x86_64-raylib
+pacman -S mingw-w64-x86_64-fftw
+pacman -S mingw-w64-x86_64-portaudio
 ```
 
-Go to `/build/bin/` and run `audvi`
+then compile with 
+`g++ -o -std=c++17 -o audvi.exe src/main.cpp src/vis.cpp src/lib/tinyfiledialogs/tinyfiledialogs.c -lraylib -lportaudio -lfftw3 -lwinmm -lws2_32 -lole32 -lcomdlg32 -lm -lpthread`
 
-### Usage
+## Usage
 
 ```
 ./main <flag>
