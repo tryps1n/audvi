@@ -8,25 +8,32 @@ Demonstration of audvi can be watched [here](https://drive.google.com/file/d/16a
 
 ![image](./readmeassets/img1.png)
 ![image](./readmeassets/img2.png)
-![image](./readmeassets/img3.png)
-![image](./readmeassets/img4.png)
+
 
 ## How to run 
 
 ### Linux (pacman):
-`sudo pacman -S raylib fftw3 portaudio`
-Navigate to project directory
-`cd /path/to/audvi`
+`sudo pacman -S raylib fftw3 portaudio`  
 
-Compile
-`g++ -o audvi src/main.cpp src/vis.cpp src/lib/tinyfiledialogs/tinyfiledialogs.c -lraylib -lportaudio -lfftw3 -lm -lpthread -ldl`
+Navigate to project directory  
+
+`cd /path/to/audvi`  
+
+
+Compile  
+
+`g++ -o audvi src/main.cpp src/vis.cpp src/lib/tinyfiledialogs/tinyfiledialogs.c -lraylib -lportaudio -lfftw3 -lm -lpthread -ldl`  
+
 
 ### MacOS:
-`brew install raylib fftw3 portaudio`
-Navigate to project directory
+`brew install raylib fftw3 portaudio`  
+
+Navigate to project directory  
+
 `cd /path/to/audvi`
 
-Compile (may need to link CoreFoundation framework)
+Compile (may need to link CoreFoundation framework)  
+
 `g++ -o audvi src/main.cpp src/vis.cpp src/lib/tinyfiledialogs/tinyfiledialogs.c -lraylib -lportaudio -lfftw3 -framework CoreFoundation -lm -lpthread -ldl`
 
 ### Windows:
@@ -38,7 +45,8 @@ pacman -S mingw-w64-x86_64-fftw
 pacman -S mingw-w64-x86_64-portaudio
 ```
 
-then compile with 
+then compile with  
+ 
 `g++ -o -std=c++17 -o audvi.exe src/main.cpp src/vis.cpp src/lib/tinyfiledialogs/tinyfiledialogs.c -lraylib -lportaudio -lfftw3 -lwinmm -lws2_32 -lole32 -lcomdlg32 -lm -lpthread`
 
 ## Usage
